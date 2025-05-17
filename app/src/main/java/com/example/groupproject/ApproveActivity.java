@@ -1,28 +1,27 @@
 package com.example.groupproject;
 
-import android.content.Intent;
+
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 
-public class ApproveActivity extends AppCompatActivity {
+import com.google.gson.Gson;
 
-    private TextView detailsText;
+public class ApproveActivity extends AppCompatActivity {
 
     private TextView textDate, textDepartment, textRequestingName, textProjectName, textDateTime, textVenue;
     private TextView textQty, textDescription, textTransferDate, textFrom, textTo, textReturnDate, textRemarks;
     private TextView textApprovedBy;
 
-    Button btnApprove;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_approve_form);
-
-
 
         // Find all views
         textDate = findViewById(R.id.textViewDate);
@@ -42,16 +41,28 @@ public class ApproveActivity extends AppCompatActivity {
 
         textApprovedBy = findViewById(R.id.textViewApprovedBy);
 
+
+
         // Load and show the data
         loadRequestData();
-
-
     }
 
     private void loadRequestData() {
+        // Try to get from intent
         BorrowRequest request = (BorrowRequest) getIntent().getSerializableExtra("request");
+
+        // If null, try loading from SharedPreferences
         if (request == null) {
-            Toast.makeText(this, "No request data received", Toast.LENGTH_SHORT).show();
+            SharedPreferences prefs = getSharedPreferences("permit_data", MODE_PRIVATE);
+            String json = prefs.getString("request_json", null);
+            if (json != null) {
+                Gson gson = new Gson();
+                request = gson.fromJson(json, BorrowRequest.class);
+            }
+        }
+
+        if (request == null) {
+            Toast.makeText(this, "No request data available", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -63,9 +74,9 @@ public class ApproveActivity extends AppCompatActivity {
         textDateTime.setText(request.time);
         textVenue.setText(request.venue);
 
-        // Set first item (you can loop if needed)
+        // Set item data (assumes 1 item for now)
         if (request.items != null && !request.items.isEmpty()) {
-            BorrowRequest.Item item = request.items.get(0); // assuming 1 item for now
+            BorrowRequest.Item item = request.items.get(0);
             textQty.setText(String.valueOf(item.qty));
             textDescription.setText(item.description);
             textTransferDate.setText(item.dateOfTransfer);
@@ -76,17 +87,6 @@ public class ApproveActivity extends AppCompatActivity {
         // Optional defaults
         textReturnDate.setText("N/A");
         textRemarks.setText("None");
-        textApprovedBy.setText("Pending");
-
-        // Launch ApproveActivity when button is clicked
-        Button btnApprove = findViewById(R.id.btnApprove);
-        btnApprove.setOnClickListener(v -> {
-            Intent intent = new Intent(ApproveActivity.this, ApproveActivity.class);
-            intent.putExtra("request", request);
-            startActivity(intent);
-        });
-
+        textApprovedBy.setText("");
     }
-
-
 }

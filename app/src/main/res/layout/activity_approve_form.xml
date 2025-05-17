@@ -104,12 +104,5 @@
         <TextView android:id="@+id/textViewApprovedBy" android:layout_width="match_parent" android:layout_height="wrap_content" />
         <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#999999" android:layout_marginBottom="12dp" />
 
-        <Button
-            android:id="@+id/btnApprove"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Approve Request"
-            android:layout_marginTop="16dp" />
-
     </LinearLayout>
 </ScrollView>
