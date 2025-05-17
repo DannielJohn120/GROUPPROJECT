@@ -1,13 +1,17 @@
 package com.example.groupproject;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DetailActivity extends AppCompatActivity {
 
     TextView detailsText;
+    Button btnApprove;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +38,13 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         detailsText.setText(sb.toString());
+
+        // Launch ApproveActivity when button is clicked
+        Button btnApprove = findViewById(R.id.btnApprove);
+        btnApprove.setOnClickListener(v -> {
+            Intent intent = new Intent(DetailActivity.this, ApproveActivity.class);
+            intent.putExtra("request", request);
+            startActivity(intent);
+        });
     }
 }
-
