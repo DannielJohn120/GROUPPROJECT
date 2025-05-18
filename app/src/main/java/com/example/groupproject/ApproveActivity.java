@@ -1,92 +1,57 @@
 package com.example.groupproject;
 
-
-import android.content.SharedPreferences;
+import android.content.Intent;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import java.util.List;
 import android.os.Bundle;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.gson.Gson;
+import android.content.SharedPreferences;
+import java.util.ArrayList;
+
+
 
 public class ApproveActivity extends AppCompatActivity {
 
-    private TextView textDate, textDepartment, textRequestingName, textProjectName, textDateTime, textVenue;
-    private TextView textQty, textDescription, textTransferDate, textFrom, textTo, textReturnDate, textRemarks;
-    private TextView textApprovedBy;
-
-
+    private ListView listView;
+    private List<BorrowRequest> requestList = new ArrayList<>();
+    private ArrayAdapter<String> adapter;
+    private List<String> displayList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_approve_form);
+        setContentView(R.layout.activity_approve_list); // This XML will contain just the ListView
 
-        // Find all views
-        textDate = findViewById(R.id.textViewDate);
-        textDepartment = findViewById(R.id.textViewDepartment);
-        textRequestingName = findViewById(R.id.textViewRequestingName);
-        textProjectName = findViewById(R.id.textViewProjectName);
-        textDateTime = findViewById(R.id.textViewDateTime);
-        textVenue = findViewById(R.id.textViewVenue);
+        listView = findViewById(R.id.approveListView);
 
-        textQty = findViewById(R.id.textViewQty);
-        textDescription = findViewById(R.id.textViewDescription);
-        textTransferDate = findViewById(R.id.textViewTransferDate);
-        textFrom = findViewById(R.id.textViewFrom);
-        textTo = findViewById(R.id.textViewTo);
-        textReturnDate = findViewById(R.id.textViewReturnDate);
-        textRemarks = findViewById(R.id.textViewRemarks);
+        loadSavedRequests();
 
-        textApprovedBy = findViewById(R.id.textViewApprovedBy);
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, displayList);
+        listView.setAdapter(adapter);
 
-
-
-        // Load and show the data
-        loadRequestData();
+        // When clicked, open detail view
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            BorrowRequest request = requestList.get(position);
+            Intent intent = new Intent(ApproveActivity.this, ApproveDetailActivity.class);
+            intent.putExtra("request_json", new Gson().toJson(request));
+            startActivity(intent);
+        });
     }
 
-    private void loadRequestData() {
-        // Try to get from intent
-        BorrowRequest request = (BorrowRequest) getIntent().getSerializableExtra("request");
+    private void loadSavedRequests() {
+        SharedPreferences prefs = getSharedPreferences("permit_data", MODE_PRIVATE);
+        Gson gson = new Gson();
+        int count = prefs.getInt("request_count", 0); // How many requests stored
 
-        // If null, try loading from SharedPreferences
-        if (request == null) {
-            SharedPreferences prefs = getSharedPreferences("permit_data", MODE_PRIVATE);
-            String json = prefs.getString("request_json", null);
+        for (int i = 0; i < count; i++) {
+            String json = prefs.getString("request_" + i, null);
             if (json != null) {
-                Gson gson = new Gson();
-                request = gson.fromJson(json, BorrowRequest.class);
+                BorrowRequest request = gson.fromJson(json, BorrowRequest.class);
+                requestList.add(request);
+                displayList.add(request.borrowerName + " - " + request.projectName);
             }
         }
-
-        if (request == null) {
-            Toast.makeText(this, "No request data available", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Set general info
-        textDate.setText(request.date1);
-        textDepartment.setText(request.department);
-        textRequestingName.setText(request.borrowerName);
-        textProjectName.setText(request.projectName);
-        textDateTime.setText(request.time);
-        textVenue.setText(request.venue);
-
-        // Set item data (assumes 1 item for now)
-        if (request.items != null && !request.items.isEmpty()) {
-            BorrowRequest.Item item = request.items.get(0);
-            textQty.setText(String.valueOf(item.qty));
-            textDescription.setText(item.description);
-            textTransferDate.setText(item.dateOfTransfer);
-            textFrom.setText(item.locationFrom);
-            textTo.setText(item.locationTo);
-        }
-
-        // Optional defaults
-        textReturnDate.setText("N/A");
-        textRemarks.setText("None");
-        textApprovedBy.setText("");
     }
 }

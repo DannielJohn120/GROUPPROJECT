@@ -1,6 +1,5 @@
 package com.example.groupproject;
 
-
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -13,14 +12,12 @@ public class DetailActivity extends AppCompatActivity {
 
     TextView detailsText;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
         detailsText = findViewById(R.id.detailsText);
-
 
         BorrowRequest request = (BorrowRequest) getIntent().getSerializableExtra("request");
 
@@ -44,14 +41,18 @@ public class DetailActivity extends AppCompatActivity {
 
             detailsText.setText(sb.toString());
 
-            // Save to SharedPreferences using Gson
+            // Save to SharedPreferences
             SharedPreferences prefs = getSharedPreferences("permit_data", MODE_PRIVATE);
             SharedPreferences.Editor editor = prefs.edit();
-            Gson gson = new Gson();
-            String json = gson.toJson(request);
-            editor.putString("request_json", json);
-            editor.apply();
 
+            Gson gson = new Gson();
+            String json = gson.toJson(request); // ✅ Corrected here
+
+            int count = prefs.getInt("request_count", 0);
+            editor.putString("request_" + count, json);
+            editor.putInt("request_count", count + 1);
+            editor.putString("request_json", json); // Also store latest request for ApproveActivity
+            editor.apply();
         }
     }
 }

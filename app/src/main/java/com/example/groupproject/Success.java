@@ -45,10 +45,15 @@ public class Success extends AppCompatActivity {
                 Intent intent = new Intent(Success.this, ApproveActivity.class);
                 intent.putExtra("request", request);
                 startActivity(intent);
+
+                // Optional: clear only the specific request_json key
+                // prefs.edit().remove("request_json").apply();
+
+                // Or if you really want to clear all:
+                // prefs.edit().clear().apply();
             } else {
                 Toast.makeText(Success.this, "No request data available", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 }
