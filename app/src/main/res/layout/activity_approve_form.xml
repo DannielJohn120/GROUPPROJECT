@@ -29,6 +29,7 @@
             android:gravity="center"
             android:layout_marginBottom="16dp" />
 
+        <!-- General Info Section -->
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Date:" />
         <TextView android:id="@+id/textViewDate" android:layout_width="match_parent" android:layout_height="wrap_content" />
         <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#999999" android:layout_marginBottom="12dp" />
@@ -56,6 +57,7 @@
         <TextView android:id="@+id/textViewVenue" android:layout_width="match_parent" android:layout_height="wrap_content" />
         <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#999999" android:layout_marginBottom="12dp" />
 
+        <!-- Item Details Section -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -69,6 +71,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <!-- Header Row -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -84,6 +87,7 @@
                 <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="2" android:text="Remarks" />
             </LinearLayout>
 
+            <!-- Data Row -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -100,6 +104,7 @@
             </LinearLayout>
         </LinearLayout>
 
+        <!-- Footer Section -->
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Approved By:" android:layout_marginTop="16dp" />
         <TextView android:id="@+id/textViewApprovedBy" android:layout_width="match_parent" android:layout_height="wrap_content" />
         <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#999999" android:layout_marginBottom="12dp" />
