@@ -168,7 +168,7 @@ public class Register extends AppCompatActivity {
                             Intent intent = new Intent(Register.this, OtpActivity.class);
                             intent.putExtra("email", email); // pass email for verification
                             startActivity(intent);
-                            finish();
+
                         } else {
                             Toast.makeText(this, "Failed to send OTP: " + obj.getString("message"), Toast.LENGTH_LONG).show();
                         }
